@@ -6,7 +6,7 @@
 class Graph;
 
 struct alg_options {
-    unsigned short int verb;
+    unsigned short int verbosity;
     int ws_size,out_it;
     double p_exp,lb,ub,perc_at_bounds;
 };
@@ -21,7 +21,7 @@ private:
 
     unsigned int n,m,z,z_nm,it,it_bh,k,it_nm,n_ws,n_new_act_l,n_new_act_u;
     unsigned int n_f,n_g,seed,n_ws_max,n_ws_max_k;
-    unsigned short int flag,verbosity;
+    unsigned short int flag,verb;
     double p_exp,modularity,l,u,f,f_best_local,f_prev,f_w,fv,stepsize,sq_norm_g_ws;
     double norm_proj_d,sup_norm_proj_g,gd,f_first,delta_f0;
     bool ls,f_computed,gd_exit,dir_exit,stepsize_exit,f_exit,is_first_linesearch,is_ws_full;

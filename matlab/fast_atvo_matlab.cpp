@@ -7,21 +7,22 @@
 // -------------------------------------------------------------------------
 //
 // Reference paper:
-// A. Cristofari, F. Rinaldi, F. Tudisco (2019). Total variation based
-// community detection using a nonlinear optimization approach.
-// arXiv preprint arXiv:1907.08048.
+// A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
+// community detection using a nonlinear optimization approach. SIAM Journal
+// on Applied Mathematics, to appear
 //
 // -------------------------------------------------------------------------
 //
 // Authors:
 // Andrea Cristofari (e-mail: andrea.cristofari@unipd.it)
 // Francesco Rinaldi (e-mail: rinaldi@math.unipd.it)
-// Francesco Tudisco (e-mail: f.tudisco@strath.ac.uk)
+// Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update:
-// December 9th, 2019
+// May 6th, 2020
 //
-// Copyright 2019 Andrea Cristofari, Francesco Rinaldi, Francesco Tudisco.
+// Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
+// Tudisco.
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -96,7 +97,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     alg_opts.lb = -1e0;
     alg_opts.ub = 1e0;
     alg_opts.perc_at_bounds = 1e0;
-    alg_opts.verb = 0;
+    alg_opts.verbosity = 0;
     if (nrhs > 2) {
         if (!mxIsStruct(prhs[2]) || mxGetNumberOfElements(prhs[2])>1) {
             mexErrMsgTxt("the third input (which is optional) must be a structure.");
@@ -135,14 +136,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
                     mexErrMsgTxt("'perc_at_bounds' must be a real number between 0 and 1.");
                 }
                 alg_opts.perc_at_bounds = *mxGetPr(tmp_mxArray);
-            } else if (std::string(tmp_char).compare(std::string("verb")) == 0) {
+            } else if (std::string(tmp_char).compare(std::string("verbosity")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) ||
                     *mxGetPr(tmp_mxArray)<0e0 || *mxGetPr(tmp_mxArray)>2e0) {
-                    mexErrMsgTxt("'verb' must be between 0 and 2.");
+                    mexErrMsgTxt("'verbosity' must be between 0 and 2.");
                 }
-                alg_opts.verb = (unsigned short int)round(*mxGetPr(tmp_mxArray));
+                alg_opts.verbosity = (unsigned short int)round(*mxGetPr(tmp_mxArray));
             } else {
-                mexErrMsgTxt("in the third input (which is optional), valid field names of the structure are 'p_exp', 'ws_size', 'out_it', 'lb', 'ub', 'perc_at_bounds' and 'verb'.");
+                mexErrMsgTxt("in the third input, valid field names of the structure are 'p_exp', 'ws_size', 'out_it', 'lb', 'ub', 'perc_at_bounds' and 'verbosity'.");
             }            
         }
     }

@@ -2,29 +2,31 @@
 %
 % This file is part of FAST-ATVO, which is a software for community
 % detection in an undirected graph with non-negative weights.
+% See 'README.txt' to see how to use FAST-ATVO.
 %
-% This file provides an example of how to run FAST-ATVO via Matlab.
-% For details on the required syntax, type 'help fast_atvo_matlab_syntax'
-% in the Matlab prompt.
+% This file provides an example of how to run FAST-ATVO via Matlab. 
+% See file 'fast_atvo_matlab_syntax.txt' for details on the required
+% syntax.
 %
 % -------------------------------------------------------------------------
 %
 % Reference paper:
-% A. Cristofari, F. Rinaldi, F. Tudisco (2019). Total variation based
-% community detection using a nonlinear optimization approach.
-% arXiv preprint arXiv:1907.08048.
+% A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
+% community detection using a nonlinear optimization approach. SIAM Journal
+% on Applied Mathematics, to appear
 %
 % -------------------------------------------------------------------------
 %
 % Authors:
 % Andrea Cristofari (e-mail: andrea.cristofari@unipd.it)
 % Francesco Rinaldi (e-mail: rinaldi@math.unipd.it)
-% Francesco Tudisco (e-mail: f.tudisco@strath.ac.uk)
+% Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 %
 % Last update:
-% December 9th, 2019
+% May 6th, 2020
 %
-% Copyright 2019 Andrea Cristofari, Francesco Rinaldi, Francesco Tudisco.
+% Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
+% Tudisco.
 %
 % Licensing:
 % This file is part of FAST-ATVO.
@@ -95,7 +97,7 @@ t_solver = toc(t_start) - t_solver;
 %---------------------------------------------------------------------------------
 
 fprintf('\n%s\n\n%s\n\n%s%-.4f\n\n%s%i\n%s%.4g\n%s%-.4e%s\n%s%-.4e%s\n%s%-.4e%s\n\n%s\n\n', ...
-        '********************** FINAL RESULTS **********************', ...
+        '*************************************************************', ...
         'Algorithm: FAST-ATVO', ...
         'community modularity = ', Q, ...
         'number of graph nodes = ', N, ...
@@ -103,4 +105,4 @@ fprintf('\n%s\n\n%s\n\n%s%-.4f\n\n%s%i\n%s%.4g\n%s%-.4e%s\n%s%-.4e%s\n%s%-.4e%s\
         'solving time: ', max(t_solver,0e0), ' seconds', ...
         'time to compute x0: ', max(t_x0,0e0), ' seconds', ...
         'total time: ', max(t_solver+t_x0,0e0), ' seconds', ...
-        '***********************************************************');
+        '*************************************************************');

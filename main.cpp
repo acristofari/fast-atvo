@@ -7,21 +7,22 @@
 // -------------------------------------------------------------------------
 //
 // Reference paper:
-// A. Cristofari, F. Rinaldi, F. Tudisco (2019). Total variation based
-// community detection using a nonlinear optimization approach.
-// arXiv preprint arXiv:1907.08048.
+// A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
+// community detection using a nonlinear optimization approach. SIAM Journal
+// on Applied Mathematics, to appear
 //
 // -------------------------------------------------------------------------
 //
 // Authors:
 // Andrea Cristofari (e-mail: andrea.cristofari@unipd.it)
 // Francesco Rinaldi (e-mail: rinaldi@math.unipd.it)
-// Francesco Tudisco (e-mail: f.tudisco@strath.ac.uk)
+// Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update:
-// December 9th, 2019
+// May 6th, 2020
 //
-// Copyright 2019 Andrea Cristofari, Francesco Rinaldi, Francesco Tudisco.
+// Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
+// Tudisco.
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -113,7 +114,7 @@ int main(int argc, char *argv[]) {
     alg_opts.lb = -1e0;
     alg_opts.ub = 1e0;
     alg_opts.perc_at_bounds = 1e0;
-    alg_opts.verb = 0;
+    alg_opts.verbosity = 0;
     struct output_options {
         char *file_communities = NULL;
         char *file_modularity = NULL;
@@ -229,7 +230,7 @@ int main(int argc, char *argv[]) {
                             std::cout << "error: the verbosity level must be between 0 and 2\n";
                             return 1;
                         }
-                        alg_opts.verb = (unsigned short int) round(tmp);
+                        alg_opts.verbosity = (unsigned short int) round(tmp);
                         is_v_set = true;
                         break;
                     default:
@@ -253,7 +254,7 @@ int main(int argc, char *argv[]) {
     // print final results to screen
     std::cout.precision(4);
     std::cout.setf(std::ios::fixed,std::ios::floatfield);
-    std::cout << "\n********************** FINAL RESULTS **********************"
+    std::cout << "\n*************************************************************"
               << "\n\nAlgorithm: FAST-ATVO"
               << "\n\ncommunity modularity = " << alg.get_modularity();
     std::cout.setf(std::ios::scientific,std::ios::floatfield);
@@ -261,7 +262,7 @@ int main(int argc, char *argv[]) {
               << "\ngraph volume = " << gr.volume
               << "\nsolving time: " << (float)(t_solver-t_setup)/CLOCKS_PER_SEC << " seconds"
               << "\nset-up time: " << (float)(t_setup-t_start)/CLOCKS_PER_SEC << " seconds"
-              << "\n\n***********************************************************\n\n";
+              << "\n\n*************************************************************\n\n";
 
     // print final results to files
     if (output_opts.file_communities != NULL) {
@@ -672,7 +673,7 @@ bool get_x0_from_file(const char *file_name, std::vector<double>& x0) {
 void print_usage() {
     std::cout << "\nUsage of FAST-ATVO via command prompt:\n\n"
               << "fast_atvo GraphFile X0File [options]\n\n"
-              << "where 'options' are non-mandatory arguments that must have the\n"
+              << "where '[options]' are optional input arguments that must have the\n"
               << "following form:\n\n"
               << "-c string\n"
               << "   It is the name of the file where the communities found by\n"

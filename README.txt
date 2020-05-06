@@ -6,16 +6,16 @@ with non-negative weights.
 -------------------------------------------------------------------------
 
 Reference paper:
-A. Cristofari, F. Rinaldi, F. Tudisco (2019). Total variation based
-community detection using a nonlinear optimization approach.
-arXiv preprint arXiv:1907.08048.
+A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
+community detection using a nonlinear optimization approach. SIAM Journal
+on Applied Mathematics, to appear
 
 -------------------------------------------------------------------------
 
 Authors:
 Andrea Cristofari (e-mail: andrea.cristofari@unipd.it)
 Francesco Rinaldi (e-mail: rinaldi@math.unipd.it)
-Francesco Tudisco (e-mail: f.tudisco@strath.ac.uk)
+Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 
 -------------------------------------------------------------------------
 
@@ -26,6 +26,8 @@ How to use FAST-ATVO
 1 - In this folder, you should see the following files:
 
     - 'COPYING.txt',
+    - 'ExampleGraph.txt',
+    - 'ExampleX0.txt',
     - 'fast_atvo.cpp',
     - 'fast_atvo.h',
     - 'graph.h',
@@ -46,7 +48,8 @@ How to use FAST-ATVO
     see the subsequent example, otherwise skip to step 3 to see how to
     run FAST-ATVO via Matlab.
 
-  2a - Prepare a text file with the weight matrix, each line being of the
+  2a - Prepare a text file with the weight matrix expressed as a square
+       upper triangular matrix. Each line of the text file must have the
        following form:
 
        i_1,j_1 w_1 i_2,j_2 w_2 i_3,j_3 w_3 ... 
@@ -54,17 +57,14 @@ How to use FAST-ATVO
        where any tern i_h,j_h w_h represents an edge between nodes i_h
        and j_h with non-negative weight w_h.
 
-       Note that:
-         
-       - Unspecified weights between two nodes are assumed to be zero (so
-       that only positive weights need to be specified).
+       It must hold i_1 <= i_2 <= i_3 <= ...., i.e., the first nodes of the
+       terns must be written in a non-decreasing order.
 
-       - The weight matrix must be upper triangular (it will be
-       symmetrized automatically leaving the diagonal unchanged, since the
-       graph is assumed to be undirected) and the first nodes of the terns
-       must be ordered increasingly. This means that it must hold
-       i_1 <= j_1, i_2 <= j_2, i_3 <= j_3, ..., and
-       i_1 <= i_2 <= i_3 <= ....
+       Note that it must also hold i_1 <= j_1, i_2 <= j_2, i_3 <= j_3, ...,
+       since the weight matrix must be upper triangular.
+       
+       Unspecified weights between two nodes are assumed to be zero (so
+       that only positive weights need to be specified).
 
        For instance, consider the following weight matrix:
 
@@ -86,12 +86,12 @@ How to use FAST-ATVO
        1,2 0.9 1,3 1.5 1,4 2 3,4 0.8
        3,5 1.1 4,5 0.3
 
-  2b - Prepare a text file with the starting point of the algorithm, each
-       line containing scalars separated by blank spaces (one value per
-       line is also allowed).
+  2b - Prepare a text file with the starting point of the algorithm. Each
+       line of the text file must contain scalars separated by blank spaces
+       (one value per line is also allowed).
 
-       Note that the starting point is a column vector and its length
-       must be equal to the number of nodes.
+       The starting point must be a vector of length equal to the number of
+       nodes.
 
        For instance, consider the following starting point:
 
@@ -117,13 +117,13 @@ How to use FAST-ATVO
 
   2c - Compile 'fast_atvo.cpp' and 'main.cpp', then create the executable
        'fast_atvo'. To run FAST-ATVO, you have to type in the command
-       prompt:
+       prompt
 
        fast_atvo GraphFile X0File [options]
 
        where 'GraphFile' is the name of the file with the weight matrix,
        'X0File' is the name of the file with the starting point of the
-       algorithm and '[options]' are non-mandatory arguments that allow
+       algorithm and '[options]' are optional input arguments that allow
        the user to modify some algorithm parameters and to print the
        final results to files.
        In particular, '[options]' must have the following form:
@@ -183,7 +183,7 @@ How to use FAST-ATVO
        the files specified in the options (if any). Moreover, if
        verbosity was activated, a file named 'iteration_history.txt' is
        created, where the iteration details of the optimization algorithm
-       are repored.
+       are reported.
 
   Example.
        Consider the two example files included in the main folder, i.e.,
