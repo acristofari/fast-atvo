@@ -2,11 +2,13 @@
 //
 // This file is part of FAST-ATVO, which is a software for community
 // detection in an undirected graph with non-negative weights.
-// See 'README.txt' to see how to use FAST-ATVO.
+//
+// See the file 'README.txt' to know how to use FAST-ATVO.
 //
 // -------------------------------------------------------------------------
 //
 // Reference paper:
+//
 // A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
 // community detection using a nonlinear optimization approach. SIAM Journal
 // on Applied Mathematics, to appear
@@ -18,8 +20,8 @@
 // Francesco Rinaldi (e-mail: rinaldi@math.unipd.it)
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
-// Last update:
-// May 6th, 2020
+// Last update of this file:
+// May 29th, 2020
 //
 // Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
 // Tudisco.
@@ -50,7 +52,7 @@
 
 // constructor
 //-------------------------------------------------------------------------------------
-Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const alg_options& alg_opts) {
+Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const fast_atvo_options& opts) {
             
     // parameters for termination of local minimization
     // (see description of 'solve_locally' function below)
@@ -75,12 +77,12 @@ Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const alg_op
     srand(seed);
     gr = p;
     n = gr->n;
-    p_exp = alg_opts.p_exp;
-    n_ws_max = (unsigned int) alg_opts.ws_size;
-    it_bh = (unsigned int) alg_opts.out_it;
-    l = alg_opts.lb;
-    u = alg_opts.ub;
-    verb = alg_opts.verbosity;
+    p_exp = opts.p_exp;
+    n_ws_max = opts.ws_size;
+    it_bh = opts.out_it;
+    l = opts.lb;
+    u = opts.ub;
+    verbosity = opts.verbosity;
     if (u-l < 2e0) {
         eps_opt *= (u-l)/2e0;
         min_norm_proj_d *= (u-l)/2e0;
@@ -88,12 +90,12 @@ Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const alg_op
     }
     x.resize(n);
     g.resize(n);
-    if (alg_opts.perc_at_bounds >= 1e0) {
+    if (opts.perc_at_bounds >= 1e0) {
         for (unsigned int i=0; i<n; i++) {
             x[i] = x0[gr->ind_n_to_n_original[i]] < 0e0 ?
                    l : (x0[gr->ind_n_to_n_original[i]] > 0e0 ? u : 0e0);
         }
-    } else if (alg_opts.perc_at_bounds > 0e0) {
+    } else if (opts.perc_at_bounds > 0e0) {
         unsigned int count_l,count_u;
         std::vector<unsigned int> ind_vars;
         ind_vars.resize(n);
@@ -112,10 +114,10 @@ Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const alg_op
         count_u = n + 1 - count_u;
         shuffle(ind_vars.begin(),ind_vars.begin()+count_l,std::default_random_engine(seed++));
         shuffle(ind_vars.end()-count_u,ind_vars.end(),std::default_random_engine(seed++));
-        for (unsigned int i=0; i<std::min((unsigned int)ceil(alg_opts.perc_at_bounds*count_l),(unsigned int)count_l); i++) {
+        for (unsigned int i=0; i<std::min((unsigned int)ceil(opts.perc_at_bounds*count_l),(unsigned int)count_l); i++) {
             x[i] = l;
         }
-        for (unsigned int i=n-std::min((unsigned int)ceil(alg_opts.perc_at_bounds*count_u),(unsigned int)count_u); i<n; i++) {
+        for (unsigned int i=n-std::min((unsigned int)ceil(opts.perc_at_bounds*count_u),(unsigned int)count_u); i<n; i++) {
             x[i] = u;
         }
     } else {
@@ -130,11 +132,11 @@ Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const alg_op
 
 //-------------------------------------------------------------------------------------
 void Fast_atvo::solve() {
-    if (verb >= 1) {
-        std::cout.precision(4);
+    if (verbosity > 0) {
+        std::cout.precision(5);
         std::cout.setf(std::ios::scientific,std::ios::floatfield);
         file_output.open("iteration_history.txt",std::ios::trunc);
-        file_output.precision(4);
+        file_output.precision(5);
         file_output.setf(std::ios::scientific,std::ios::floatfield);
         std::cout << "number of variables = " << n << " ("
                   << gr->n_original-n << " were removed in pre-process)\n\n\n*** outer iteration 1 ***";
@@ -157,9 +159,9 @@ void Fast_atvo::solve() {
         eps_opt = std::min(9e-1*(u-l),pow(15e-1,floor((double)(it_bh)/2e0))*eps_opt_orig);
         for (unsigned int i=1; i<it_bh; i++) {
             swap_vars(x_best);
-            if (verb >= 1) {
-                std::cout << "\n\n\n*** outer iteration " <<  i + 1 << " ***";
-                file_output << "\n\n\n*** outer iteration " <<  i + 1 << " ***";
+            if (verbosity > 0) {
+                std::cout << "\n\n\n*** outer iteration " <<  i+1 << " ***";
+                file_output << "\n\n\n*** outer iteration " <<  i+1 << " ***";
             }
             eps_opt = std::max(eps_opt_orig,eps_opt/15e-1);
             solve_locally();
@@ -174,9 +176,9 @@ void Fast_atvo::solve() {
         c = c_best;
         modularity = modularity_best;
     }
-    if (verb >= 1) {
-        std::cout << "\n\nWARNING: using 'verb = 0' may be faster\n\n";
-        file_output << "\n\nWARNING: using 'verb = 0' may be faster\n";
+    if (verbosity > 0) {
+        std::cout << "\n\nWARNING: using 'verbosity = 0' may be faster\n\n";
+        file_output << "\n\nWARNING: using 'verbosity = 0' may be faster\n";
         file_output.close();
     }
     // clear vectors to free memory (only 'c' and 'x' are maintained)
@@ -339,7 +341,7 @@ const short unsigned int Fast_atvo::solve_locally() {
         is_restarted = false;
         compute_working_set();
 
-        if (verb > 1) {
+        if (verbosity > 1) {
             std::cout << "\n\n--- iteration details ---\n\nsize of the working set = " << n_ws;
             file_output << "\n\n--- iteration details ---\n\nsize of the working set = " << n_ws;
         }
@@ -357,13 +359,13 @@ const short unsigned int Fast_atvo::solve_locally() {
                 n_f++;
             }
             if (f >= f_w) {
-                if (verb > 1) {
+                if (verbosity > 1) {
                     std::cout << "\nfunction control not satisfied (f = " << f << ")\n\nrestart from the best point";
                     file_output << "\nfunction control not satisfied (f = " << f << ")\n\nrestart from the best point";
                 }
                 restart();
             } else {
-                if (verb > 1) {
+                if (verbosity > 1) {
                     std::cout << "\nfunction control satisfied (f = " << f << ")";
                     file_output << "\nfunction control satisfied (f = " << f << ")";
                 }
@@ -420,7 +422,7 @@ const short unsigned int Fast_atvo::solve_locally() {
             }
             gd = -c_bb*sq_norm_g_ws;
 
-            if (verb > 1) {
+            if (verbosity > 1) {
                 std::cout << "\ndirectional derivative = " << gd;
                 file_output << "\ndirectional derivative = " << gd;
             }
@@ -449,7 +451,7 @@ const short unsigned int Fast_atvo::solve_locally() {
                     }
                     norm_proj_d = sqrt(norm_proj_d);
 
-                    if (verb > 1) {
+                    if (verbosity > 1) {
                         std::cout << "\nnorm of the projected direction = " << norm_proj_d;
                         file_output << "\nnorm of the projected direction = " << norm_proj_d;
                     }
@@ -469,7 +471,7 @@ const short unsigned int Fast_atvo::solve_locally() {
                             compute_sup_norm_proj_g();
                             f_computed = false;
                             it_nm++;
-                            if (verb > 1) {
+                            if (verbosity > 1) {
                                 std::cout << "\nunit stepsize accepted without computing f";
                                 file_output << "\nunit stepsize accepted without computing f";
                             }
@@ -494,12 +496,12 @@ const short unsigned int Fast_atvo::solve_locally() {
                                     v[j] = x[j];
                                     x[j] = tmp;
                                 }
-                                if (verb > 1) {
+                                if (verbosity > 1) {
                                     std::cout << "\nfunction control satisfied (f = " << f << ")";
                                     file_output << "\nfunction control satisfied (f = " << f << ")";
                                 }
                             } else { // objective function not decreased -> restart
-                                if (verb > 1) {
+                                if (verbosity > 1) {
                                     std::cout << "\nfunction control not satisfied (f = " << f
                                               << ")\n\nrestart from the best point";
                                     file_output << "\nfunction control not satisfied (f = " << f
@@ -532,13 +534,13 @@ const short unsigned int Fast_atvo::solve_locally() {
                             norm_proj_d += (x[j]-v[j])*(x[j]-v[j]);
                         }
                         norm_proj_d = sqrt(norm_proj_d);
-                        if (verb > 1) {
+                        if (verbosity > 1) {
                             std::cout << "\nnorm of the projected direction = " << norm_proj_d;
                             file_output << "\nnorm of the projected direction = " << norm_proj_d;
                         }
                         if (norm_proj_d > min_norm_proj_d) {
                             update_w();
-                            if (verb > 1) {
+                            if (verbosity > 1) {
                                 std::cout << "\nfunction control satisfied (f = " << f << ")";
                                 file_output << "\nfunction control satisfied (f = " << f << ")";
                             }
@@ -559,12 +561,12 @@ const short unsigned int Fast_atvo::solve_locally() {
                             norm_proj_d += tmp*tmp;
                         }
                         norm_proj_d = sqrt(norm_proj_d);
-                        if (verb > 1) {
+                        if (verbosity > 1) {
                             std::cout << "\nnorm of the projected direction = " << norm_proj_d;
                             file_output << "\nnorm of the projected direction = " << norm_proj_d;
                         }
                         if (norm_proj_d > min_norm_proj_d) {
-                            if (verb > 1) {
+                            if (verbosity > 1) {
                                 std::cout << "\npoint not accepted (f = " << f
                                           << ")\n\nrestart from the best point";
                                 file_output << "\npoint not accepted (f = " << f
@@ -588,7 +590,7 @@ const short unsigned int Fast_atvo::solve_locally() {
                         norm_proj_d += (x[j]-v[j])*(x[j]-v[j]);
                     }
                     norm_proj_d = sqrt(norm_proj_d);
-                    if (verb > 1) {
+                    if (verbosity > 1) {
                         std::cout << "\nnorm of the projected direction = " << norm_proj_d;
                         file_output << "\nnorm of the projected direction = " << norm_proj_d;
                     }
@@ -605,7 +607,7 @@ const short unsigned int Fast_atvo::solve_locally() {
 
                 // line search
                 if (ls && !is_restarted) {
-                    if (verb >= 2) {
+                    if (verbosity >= 2) {
                         std::cout << "\nline search";
                         file_output << "\nline search";
                     }
@@ -620,7 +622,7 @@ const short unsigned int Fast_atvo::solve_locally() {
                         n_g++;                        
                         compute_sup_norm_proj_g();
                         
-                        if (verb > 1) {
+                        if (verbosity > 1) {
                             std::cout << "\nstepsize = " << stepsize;
                             file_output << "\nstepsize = " << stepsize;
                         }
@@ -674,7 +676,7 @@ bool Fast_atvo::converged() {
 
     if ( (sup_norm_proj_g > eps_opt) && (!gd_exit) && (!dir_exit) && (!stepsize_exit) &&
         (!f_exit) && (it<max_it) && (n_f<max_n_f) && (n_g<max_n_g) ) {
-        if (verb > 0) {
+        if (verbosity > 0) {
             main_prints();
         }
         return false;
@@ -685,7 +687,7 @@ bool Fast_atvo::converged() {
             f_computed = true;
         }
         if (sup_norm_proj_g <= eps_opt) {
-            if (verb > 0) {
+            if (verbosity > 0) {
                 main_prints();
                 std::cout << "\n\n================================================================================"
                           << "\noptimality condition satisfied: sup-norm of the projected gradient <= " << eps_opt
@@ -701,14 +703,14 @@ bool Fast_atvo::converged() {
                 return check_stop();
             }
         } else if (gd_exit) {
-            if (verb > 0) {
+            if (verbosity > 0) {
                 std::cout << "\n\ndirectional derivative not sufficiently negative";
                 file_output << "\n\ndirectional derivative not sufficiently negative";
             }
             if (f <= f_best_local) {
                 it--;
                 flag = 1;
-                if (verb > 1) {
+                if (verbosity > 0) {
                     std::cout << ", algorithm stopped";
                     file_output << ", algorithm stopped";
                 }
@@ -717,14 +719,14 @@ bool Fast_atvo::converged() {
                 return check_stop();
             }
         } else if (dir_exit) {
-            if (verb > 0) {
+            if (verbosity > 0) {
                 std::cout << "\n\nprojected direction too small";
                 file_output << "\n\nprojected direction too small";
             }
             if (f <= f_best_local) {
                 it--;
                 flag = 2;
-                if (verb > 1) {
+                if (verbosity > 0) {
                     std::cout << ", algorithm stopped";
                     file_output << ", algorithm stopped";
                 }
@@ -733,14 +735,14 @@ bool Fast_atvo::converged() {
                 return check_stop();
             }
         } else if (stepsize_exit) {
-            if (verb > 0) {
+            if (verbosity > 0) {
                 std::cout << "\n\nstepsize too small";
                 file_output << "\n\nstepsize too small";
             }
             if (f <= f_best_local) {
                 it--;
                 flag = 3;
-                if (verb > 1) {
+                if (verbosity > 0) {
                     std::cout << ", algorithm stopped";
                     file_output << ", algorithm stopped";
                 }
@@ -749,13 +751,13 @@ bool Fast_atvo::converged() {
                 return check_stop();
             }
         } else if (f_exit) {
-            if (verb > 0) {
+            if (verbosity > 0) {
                 std::cout << "\n\nobjective decrease too small";
                 file_output << "\n\nobjective decrease too small";
             }
             if (f <= f_best_local) {
                 flag = 4;
-                if (verb > 1) {
+                if (verbosity > 0) {
                     std::cout << ", algorithm stopped";
                     file_output << ", algorithm stopped";
                 }
@@ -769,21 +771,21 @@ bool Fast_atvo::converged() {
             }
             if (it >= max_it) {
                 flag = 5;
-                if (verb > 0) {
+                if (verbosity > 0) {
                     main_prints();
                     std::cout << "\n\ntoo many iterations, algorithm stopped";
                     file_output << "\n\ntoo many iterations, algorithm stopped";
                 }
             } else if (n_f >= max_n_f) {
                 flag = 6;
-                if (verb > 0) {
+                if (verbosity > 0) {
                     main_prints();
                     std::cout << "\n\ntoo many function evaluations, algorithm stopped";
                     file_output << "\n\ntoo many function evaluations, algorithm stopped";
                 }
             } else if (n_g >= max_n_g) {
                 flag = 7;
-                if (verb > 0) {
+                if (verbosity > 0) {
                     main_prints();
                     std::cout << "\n\ntoo many gradient evaluations, algorithm stopped";
                     file_output << "\n\ntoo many gradient evaluations, algorithm stopped";
@@ -800,8 +802,8 @@ bool Fast_atvo::converged() {
 bool Fast_atvo::check_stop() { // it returns true if the algorithm must stop, false otherwise
     if ( (it<max_it) && (n_f<max_n_f) && (n_g<max_n_g) ) {
         restart();
-        if (verb > 0) {
-            if (verb > 1) {
+        if (verbosity > 0) {
+            if (verbosity > 1) {
                 std::cout << "\n\nrestart from the best point";
                 file_output << "\n\nrestart from the best point";
             }
@@ -812,19 +814,19 @@ bool Fast_atvo::check_stop() { // it returns true if the algorithm must stop, fa
         x = x_best_local;
         if (it >= max_it) {
             flag = 5;
-            if (verb > 0) {
+            if (verbosity > 0) {
                 std::cout << "\ntoo many iterations, algorithm stopped";
                 file_output << "\ntoo many iterations, algorithm stopped";
             }
         } else if (n_f >= max_n_f) {
             flag = 6;
-            if (verb > 0) {
+            if (verbosity > 0) {
                 std::cout << "\ntoo many function evaluations, algorithm stopped";
                 file_output << "\ntoo many function evaluations, algorithm stopped";
             }
         } else { // n_g >= max_n_g
             flag = 7;
-            if (verb > 0) {
+            if (verbosity > 0) {
                 std::cout << "\ntoo many gradient evaluations, algorithm stopped";
                 file_output << "\ntoo many gradient evaluations, algorithm stopped";
             }
@@ -839,13 +841,13 @@ bool Fast_atvo::check_stop() { // it returns true if the algorithm must stop, fa
 void Fast_atvo::main_prints() {
     std::cout << "\n\n--------------------------------------------------------\n\n"
               << "iteration " << it
-              << "\n\nbest f = " << f_best_local
+              << "\n\nbest f = " << std::min(f_best_local,f)
               << "\nsup-norm of the projected gradient at the current point = " << sup_norm_proj_g
               << "\nnumber of function evaluations = " << n_f
               << "\nnumber of gradient evaluations = " << n_g;
     file_output << "\n\n--------------------------------------------------------\n\n"
                 << "iteration " << it
-                << "\n\nbest f = " << f_best_local
+                << "\n\nbest f = " << std::min(f_best_local,f)
                 << "\nsup-norm of the projected gradient at the current point = " << sup_norm_proj_g
                 << "\nnumber of function evaluations = " << n_f
                 << "\nnumber of gradient evaluations = " << n_g;
@@ -994,11 +996,7 @@ void Fast_atvo::linesearch(bool fast_f) {
     f = std::inner_product(g.begin(),g.end(),x.begin(),0e0)/p_exp;
     n_f++;
 
-    if (f-f_first >= f_dec*delta_f0) {
-        f_ref = fv;
-    } else {
-        f_ref = f_w;
-    }
+    f_ref = (f-f_first >= f_dec*delta_f0) ? fv : f_w;
 
     while (f > f_ref+gamma*stepsize*gd) {
 

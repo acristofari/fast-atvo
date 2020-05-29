@@ -2,15 +2,13 @@
 %
 % This file is part of FAST-ATVO, which is a software for community
 % detection in an undirected graph with non-negative weights.
-% See 'README.txt' to see how to use FAST-ATVO.
 %
-% This file provides an example of how to run FAST-ATVO via Matlab. 
-% See file 'fast_atvo_matlab_syntax.txt' for details on the required
-% syntax.
+% This file provides an example of how to run FAST-ATVO via Matlab.
 %
 % -------------------------------------------------------------------------
 %
 % Reference paper:
+%
 % A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
 % community detection using a nonlinear optimization approach. SIAM Journal
 % on Applied Mathematics, to appear
@@ -23,7 +21,7 @@
 % Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 %
 % Last update:
-% May 6th, 2020
+% May 29th, 2020
 %
 % Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
 % Tudisco.
@@ -43,10 +41,11 @@
 %
 % -------------------------------------------------------------------------
 
-% N.B. In this example, the starting point of FAST-ATVO is the leading
+% In this example, the starting point of FAST-ATVO is the leading
 % eigenvector of the modularity matrix (it is the suggested choice in practice)
 
-make(); % build MEX files
+% We assume that the MEX file has already been built. If not, first run
+% 'make.m'.
 
 t_start = tic;
 
@@ -82,20 +81,20 @@ t_solver = toc(t_start) - t_solver;
 %---------------------------------------------------------------------------------
 % *** EXAMPLE OF HOW TO CHANGE FAST-ATVO PARAMETERS ***
 %
-% In place of the above instruction '[C,Q,x] = fast_atvo(A_triu,x0);',
-% do the following:
+% Instead of calling the algorithm by the above instruction
+% '[C,Q,x] = fast_atvo(A_triu,x0);', do the following:
 %
-% (1) create a structure having as field names the parameters to be changed
-%     and assign them new values, for instance:
+% (1) create a structure having as field names the names of the parameters
+%     to be changed and assign them new values, for instance:
 %
-%       fastatvo_opts.out_it = 5;
-%       fastatvo_opts.verb = 1;
+%       opts.verbosity = 1;
 %
-% (2)  pass this structure to 'fast_atvo' as third input argument, for instance:
+% (2)  pass the structure to 'fast_atvo' as third input argument, for instance:
 %
-%       [C,Q,x] = fast_atvo(A_triu,x0,fastatvo_opts);
+%       [C,Q,x] = fast_atvo(A_triu,x0,opts);
 %---------------------------------------------------------------------------------
 
+% write statistics to the screen
 fprintf('\n%s\n\n%s\n\n%s%-.4f\n\n%s%i\n%s%.4g\n%s%-.4e%s\n%s%-.4e%s\n%s%-.4e%s\n\n%s\n\n', ...
         '*************************************************************', ...
         'Algorithm: FAST-ATVO', ...

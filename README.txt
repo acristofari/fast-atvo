@@ -1,29 +1,28 @@
--------------------------------------------------------------------------
-
 FAST-ATVO is a software for community detection in an undirected graph
 with non-negative weights.
 
--------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 Reference paper:
+
 A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
 community detection using a nonlinear optimization approach. SIAM Journal
 on Applied Mathematics, to appear
 
--------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 Authors:
 Andrea Cristofari (e-mail: andrea.cristofari@unipd.it)
 Francesco Rinaldi (e-mail: rinaldi@math.unipd.it)
 Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 
--------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 
 How to use FAST-ATVO
-=========================================================================
+==========================================================================
 
-1 - In this folder, you should see the following files:
+1 - This directory should contain the following files:
 
     - 'COPYING.txt',
     - 'ExampleGraph.txt',
@@ -34,13 +33,14 @@ How to use FAST-ATVO
     - 'main.cpp',
     - 'README.txt',
 
-    plus a subfolder named 'matlab', which includes the following files:
+    plus a subdirectory named 'matlab', which should contain the following
+    files:
 
     - 'example_fast_atvo.m',
     - 'example_graph.mat',
     - 'fast_atvo_matlab.cpp',
-    - 'fast_atvo_matlab_syntax.txt',
-    - 'make.m'.
+    - 'make.m',
+    - 'syntax.txt'.
 
 2 - You can run FAST-ATVO either via command prompt or via Matlab.
     
@@ -54,7 +54,7 @@ How to use FAST-ATVO
 
        i_1,j_1 w_1 i_2,j_2 w_2 i_3,j_3 w_3 ... 
 
-       where any tern i_h,j_h w_h represents an edge between nodes i_h
+       where any tern i_h,j_h w_h represents an edge between the nodes i_h
        and j_h with non-negative weight w_h.
 
        It must hold i_1 <= i_2 <= i_3 <= ...., i.e., the first nodes of the
@@ -115,9 +115,9 @@ How to use FAST-ATVO
        0 1 -0.3
        0 0.2
 
-  2c - Compile 'fast_atvo.cpp' and 'main.cpp', then create the executable
-       'fast_atvo'. To run FAST-ATVO, you have to type in the command
-       prompt
+  2c - Compile the files 'fast_atvo.cpp' and 'main.cpp', then create the
+       executable 'fast_atvo'. To run FAST-ATVO, you have to type in the
+       command prompt
 
        fast_atvo GraphFile X0File [options]
 
@@ -179,19 +179,18 @@ How to use FAST-ATVO
           If not specified, by default it is equal to 0, i.e., there are
           no prints.
 
-  2d - When the algorithm is terminated, final results can be found in
-       the files specified in the options (if any). Moreover, if
-       verbosity was activated, a file named 'iteration_history.txt' is
-       created, where the iteration details of the optimization algorithm
-       are reported.
+  2d - When the algorithm is terminated, final results can be found in the
+       files specified in the options (if any). Moreover, if verbosity was
+       activated, a file named 'iteration_history.txt' is created, where
+       the iteration details of the optimization algorithm are reported.
 
   Example.
-       Consider the two example files included in the main folder, i.e.,
-       'ExampleGraph.txt' and 'ExampleX0.txt'. They contain a graph and a
-       starting point of the algorithm, respectively, according to the
-       above described format. To run FAST-ATVO via command prompt, after
-       compiling the .cpp files and creating the executable 'fast_atvo',
-       you may type
+       Consider the two example files included in this folder, i.e.,
+       'ExampleGraph.txt' and 'ExampleX0.txt'. They contain a weight
+       matrix and a starting point of the algorithm, respectively,
+       according to the above described format. To run FAST-ATVO via
+       command prompt, after creating the executable 'fast_atvo' by
+       compiling the files 'fast_atvo.cpp' and 'main.cpp', you may type
 
        fast_atvo ExampleGraph ExampleX0 -c ExampleC.txt
 
@@ -203,10 +202,9 @@ How to use FAST-ATVO
 
        fast_atvo ExampleGraph ExampleX0 -c ExampleC.txt -v 1
 
-3 - To run FAST-ATVO via Matlab, move to the subfolder 'matlab' and run
-    'make.m' to build MEX files.
+3 - To run FAST-ATVO via Matlab, move to the subdirectory 'matlab' and run
+    'make.m' to build the MEX file.
 
-    See file 'fast_atvo_matlab_syntax.txt' for the required syntax and
-    then run 'fast_atvo'.
+    See the file 'syntax.txt' for the required syntax.
 
-    See file 'example_fast_atvo.m' for an example.
+    Run 'example_fast_atvo.m' for an example.

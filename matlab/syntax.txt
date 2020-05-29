@@ -4,18 +4,13 @@ c = fast_atvo(A,x0,opts)
 [c,mod] = fast_atvo(__)
 [c,mod,x] = fast_atvo(__)
 
-Output arguments:
-- c is a 0-1 vector describing the two communities found by FAST-ATVO;
-- mod is the modularity of the communities found by FAST-ATVO;
-- x is the solution found by the optimization algorithm.
-
 Input arguments:
 - A (required) is the weight matrix, it can be sparse or full, it must be
   square upper triangular with non-negative real elements (A will be
   symmetrized automatically leaving the diagonal unchanged, since the graph
   is assumed to be undirected);
-- x0 (required) is the starting point of the optimization algorithm, it
-  must be a full column vector with length equal to the number of nodes;
+- x0 (required) is the starting point of the algorithm, it must be a full
+  column vector with length equal to the number of nodes;
 - opts (optional) is a structure having (some of) the following fields:
   p_exp, which must be a numerical value greater than 1.
          It is the exponent parameter of the objective function.
@@ -41,7 +36,7 @@ Input arguments:
          If not specified, by default it is equal to 1.
   perc_at_bounds, which must be a numerical value between 0 and 1.
          It is the percentage of negative and positive variables that
-         will be set to the lower and upper bound in x0, respectively.
+         will be set to the lower and the upper bound in x0, respectively.
          If not specified, by default it is equal to 1, i.e., all
          non-zero variables in x0 will be set to the bounds.
   verbosity, which must be a numerical value between 0 and 2.
@@ -50,8 +45,11 @@ Input arguments:
          If not specified, by default it is equal to 0, i.e., there are
          no prints.
 
--------------------------------------------------------------------------
+Output arguments:
+- c is a 0-1 vector describing the two communities found by FAST-ATVO,
+- mod is the community modularity found by FAST-ATVO,
+- x is the solution found by the optimization algorithm.
 
-See file 'example_fast_atvo.m' for an example.
+--------------------------------------------------------------------------
 
--------------------------------------------------------------------------
+See the file 'example_fast_atvo.m' for an example.
