@@ -2,7 +2,8 @@
 //
 // This file is part of FAST-ATVO, which is a software for community
 // detection in an undirected graph with non-negative weights.
-// See 'README.txt' to see how to use FAST-ATVO.
+//
+// See the file 'README.txt' to know how to run the program.
 //
 // -------------------------------------------------------------------------
 //
@@ -18,8 +19,8 @@
 // Francesco Rinaldi (e-mail: rinaldi@math.unipd.it)
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
-// Last update:
-// May 6th, 2020
+// Last update of this file:
+// May 29th, 2020
 //
 // Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
 // Tudisco.
@@ -43,7 +44,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include <vector>
 #include <iostream>
 #include <algorithm>
 #include <math.h>
@@ -107,14 +107,14 @@ int main(int argc, char *argv[]) {
     }
 
     // set options (algorithm parameters + output files)
-    alg_options alg_opts;
-    alg_opts.p_exp = 14e-1;
-    alg_opts.ws_size = std::max(10,std::min(1000,(int)round(3e-2*gr.n)));
-    alg_opts.out_it = 1;
-    alg_opts.lb = -1e0;
-    alg_opts.ub = 1e0;
-    alg_opts.perc_at_bounds = 1e0;
-    alg_opts.verbosity = 0;
+    fast_atvo_options opts;
+    opts.p_exp = 14e-1;
+    opts.ws_size = std::max(10,std::min(1000,int(round(3e-2*gr.n))));
+    opts.out_it = 1;
+    opts.lb = -1e0;
+    opts.ub = 1e0;
+    opts.perc_at_bounds = 1e0;
+    opts.verbosity = 0;
     struct output_options {
         char *file_communities = NULL;
         char *file_modularity = NULL;
@@ -148,11 +148,11 @@ int main(int argc, char *argv[]) {
                             print_usage();
                             return 1;
                         }
-                        alg_opts.p_exp = tmp;
-                        if (alg_opts.p_exp <= 1) {
+                        if (tmp <= 1) {
                             std::cout << "error: the exponent parameter of the objective function must be greater than 1\n";
                             return 1;
                         }
+                        opts.p_exp = tmp;
                         is_p_set = true;
                         break;
                     case 'w':
@@ -161,11 +161,11 @@ int main(int argc, char *argv[]) {
                             print_usage();
                             return 1;
                         }
-                        alg_opts.ws_size = (int) floor(tmp);
-                        if (alg_opts.ws_size < 1) {
+                        if (tmp < 1) {
                             std::cout << "error: the maximum size of the working set in the optimization algorithm must be greater than or equal to 1\n";
                             return 1;
                         }
+                        opts.ws_size = (unsigned int) floor(tmp);
                         is_w_set = true;
                         break;
                     case 'i':
@@ -174,11 +174,11 @@ int main(int argc, char *argv[]) {
                             print_usage();
                             return 1;
                         }
-                        alg_opts.out_it = (int) floor(tmp);
-                        if (alg_opts.out_it < 1) {
+                        if (tmp < 1) {
                             std::cout << "error: the number of outer iterations for the globalization strategy must be greater than or equal to 1\n";
                             return 1;
                         }
+                        opts.out_it = (unsigned int) floor(tmp);
                         is_i_set = true;
                         break;
                     case 'l':
@@ -187,11 +187,11 @@ int main(int argc, char *argv[]) {
                             print_usage();
                             return 1;
                         }
-                        alg_opts.lb = tmp;
-                        if (alg_opts.lb >= 0) {
+                        if (tmp >= 0) {
                             std::cout << "error: the lower bound on the variables for the optimization problem must be negative\n";
                             return 1;
                         }
+                        opts.lb = tmp;
                         is_l_set = true;
                         break;
                     case 'u':
@@ -200,11 +200,11 @@ int main(int argc, char *argv[]) {
                             print_usage();
                             return 1;
                         }
-                        alg_opts.ub = tmp;
-                        if (alg_opts.ub <= 0) {
+                        if (tmp <= 0) {
                             std::cout << "error: the upper bound on the variables for the optimization problem must be positive\n";
                             return 1;
                         }
+                        opts.ub = tmp;
                         is_u_set = true;
                         break;
                     case 'r':
@@ -213,11 +213,11 @@ int main(int argc, char *argv[]) {
                             print_usage();
                             return 1;
                         }
-                        alg_opts.perc_at_bounds = tmp;
-                        if (alg_opts.perc_at_bounds<0e0 || alg_opts.perc_at_bounds>1e0) {
+                        if (tmp<0e0 || tmp>1e0) {
                             std::cout << "error: the percentage of variables that will be set to the bounds in x0 must be between 0 and 1\n";
                             return 1;
                         }
+                        opts.perc_at_bounds = tmp;
                         is_r_set = true;
                         break;
                     case 'v':
@@ -230,7 +230,7 @@ int main(int argc, char *argv[]) {
                             std::cout << "error: the verbosity level must be between 0 and 2\n";
                             return 1;
                         }
-                        alg_opts.verbosity = (unsigned short int) round(tmp);
+                        opts.verbosity = (unsigned short int) round(tmp);
                         is_v_set = true;
                         break;
                     default:
@@ -247,14 +247,14 @@ int main(int argc, char *argv[]) {
 
     // call the solver
     t_setup = clock();
-    Fast_atvo alg(&gr,x0,alg_opts);
+    Fast_atvo alg(&gr,x0,opts);
     alg.solve();
     t_solver = clock();
 
     // print final results to screen
-    std::cout.precision(4);
+    std::cout.precision(5);
     std::cout.setf(std::ios::fixed,std::ios::floatfield);
-    std::cout << "\n*************************************************************"
+    std::cout << "*************************************************************"
               << "\n\nAlgorithm: FAST-ATVO"
               << "\n\ncommunity modularity = " << alg.get_modularity();
     std::cout.setf(std::ios::scientific,std::ios::floatfield);
@@ -264,7 +264,7 @@ int main(int argc, char *argv[]) {
               << "\nset-up time: " << (float)(t_setup-t_start)/CLOCKS_PER_SEC << " seconds"
               << "\n\n*************************************************************\n\n";
 
-    // print final results to files
+    // print final results to files (if required)
     if (output_opts.file_communities != NULL) {
         const unsigned short int *c_ptr = &(alg.get_communities()[0]);
         std::cout << "writing communities in file '" << output_opts.file_communities << "'...\n";
@@ -725,6 +725,6 @@ void print_usage() {
               << "   optimization algorithm.\n"
               << "   If not specified, by default it is equal to 0, i.e., there are\n"
               << "   no prints.\n\n"
-              << "See 'README.txt' for further details.\n";
+              << "See the file 'README.txt' for further details.\n";
 }
 //-------------------------------------------------------------------------------------
