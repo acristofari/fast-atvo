@@ -13,7 +13,7 @@
 //   pair of nodes (i.e., 'inst.node_index[i]' and 'inst.ind_row_col[i][j]')
 // - 'inst.n_rows' is the number of rows of the above three arrays
 //
-// For example, connsider the following weight matrix:
+// For example, consider the following weight matrix:
 //
 // [0     0.9   1.5   2     0
 //  0.9   0     0     0     0
