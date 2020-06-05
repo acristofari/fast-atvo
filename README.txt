@@ -5,9 +5,9 @@ with non-negative weights.
 
 Reference paper:
 
-A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
-community detection using a nonlinear optimization approach. SIAM Journal
-on Applied Mathematics, to appear
+A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total Variation Based
+Community Detection Using a Nonlinear Optimization Approach. SIAM Journal
+on Applied Mathematics, 80(3), 1392-1419
 
 --------------------------------------------------------------------------
 

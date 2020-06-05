@@ -11,9 +11,9 @@
 //
 // Reference paper:
 //
-// A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total variation based
-// community detection using a nonlinear optimization approach. SIAM Journal
-// on Applied Mathematics, to appear
+// A. Cristofari, F. Rinaldi, F. Tudisco (2020). Total Variation Based
+// Community Detection Using a Nonlinear Optimization Approach. SIAM Journal
+// on Applied Mathematics, 80(3), 1392-1419
 //
 // -------------------------------------------------------------------------
 //
@@ -23,7 +23,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// May 29th, 2020
+// June 5th, 2020
 //
 // Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
 // Tudisco.
