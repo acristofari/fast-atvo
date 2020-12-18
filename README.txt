@@ -1,4 +1,4 @@
-FAST-ATVO is a software for community detection in an undirected graph
+FAST-ATVO is a software for community detection in undirected graphs
 with non-negative weights.
 
 --------------------------------------------------------------------------

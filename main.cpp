@@ -1,7 +1,7 @@
 // -------------------------------------------------------------------------
 //
 // This file is part of FAST-ATVO, which is a software for community
-// detection in an undirected graph with non-negative weights.
+// detection in undirected graphs with non-negative weights.
 //
 // See the file 'README.txt' to know how to run the program.
 //
@@ -21,7 +21,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// June 5th, 2020
+// December 18th, 2020
 //
 // Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
 // Tudisco.
