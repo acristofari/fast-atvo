@@ -1,7 +1,7 @@
 % -------------------------------------------------------------------------
 %
 % This file is part of FAST-ATVO, which is a software for community
-% detection in an undirected graph with non-negative weights.
+% detection in undirected graphs with non-negative weights.
 %
 % This file provides an example of how to run FAST-ATVO via Matlab.
 %
@@ -21,7 +21,7 @@
 % Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 %
 % Last update of this file:
-% June 5th, 2020
+% December 18th, 2020
 %
 % Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
 % Tudisco.
@@ -78,21 +78,21 @@ t_solver = toc(t_start);
 [C,Q,x] = fast_atvo(A_triu,x0);
 t_solver = toc(t_start) - t_solver;
 
-%---------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 % *** EXAMPLE OF HOW TO CHANGE FAST-ATVO PARAMETERS ***
 %
 % Instead of calling the algorithm by the above instruction
 % '[C,Q,x] = fast_atvo(A_triu,x0);', do the following:
 %
 % (1) create a structure having as field names the names of the parameters
-%     to be changed and assign them new values, for instance:
+%     to be changed and assign them new values, e.g.,:
 %
 %       opts.verbosity = 1;
 %
-% (2)  pass the structure to 'fast_atvo' as third input argument, for instance:
+% (2) pass the structure to 'fast_atvo' as third input argument, e.g.,:
 %
 %       [C,Q,x] = fast_atvo(A_triu,x0,opts);
-%---------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 
 % write statistics to the screen
 fprintf('\n%s\n\n%s\n\n%s%-.4f\n\n%s%i\n%s%.4g\n%s%-.4e%s\n%s%-.4e%s\n%s%-.4e%s\n\n%s\n\n', ...
