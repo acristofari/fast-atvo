@@ -21,10 +21,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// December 18th, 2020
-//
-// Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
-// Tudisco.
+// January 31st, 2022
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -38,6 +35,9 @@
 // GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License
 // along with FAST-ATVO. If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2019-2022 Andrea Cristofari, Francesco Rinaldi, Francesco
+// Tudisco.
 //
 // -------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // set options (algorithm parameters + output files)
+    // get options (algorithm parameters + output files)
     fast_atvo_options opts;
     opts.p_exp = 14e-1;
     opts.ws_size = std::max(10,std::min(1000,int(round(3e-2*gr.n))));
