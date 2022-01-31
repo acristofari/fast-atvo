@@ -21,9 +21,9 @@
 % Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 %
 % Last update of this file:
-% December 18th, 2020
+% January 31st, 2022
 %
-% Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
+% Copyright 2019-2022 Andrea Cristofari, Francesco Rinaldi, Francesco
 % Tudisco.
 %
 % Licensing:
@@ -44,8 +44,8 @@
 % In this example, the starting point of FAST-ATVO is the leading
 % eigenvector of the modularity matrix (it is the suggested choice in practice)
 
-% We assume that the MEX file has already been built. If not, first run
-% 'make.m'.
+% We assume that the MEX file has already been built (otherwise, first run
+% 'make.m').
 
 t_start = tic;
 
@@ -54,8 +54,8 @@ t_start = tic;
 %-------------------------------
 dataset_name = 'example_graph.mat'; % it contains a non-negative symmetric weight matrix named 'A'
 load(dataset_name,'A');
-[N,~] = size(A); % get graph dimension
-d = A*ones(N,1); % compute vector of (weighted) degrees
+[n,~] = size(A); % get graph dimension
+d = A*ones(n,1); % compute vector of (weighted) degrees
 vol = sum(d); % compute graph volume
 
 %-------------------------------
@@ -66,7 +66,7 @@ t_x0 = toc(t_start);
 opts_linear.issym = 1;  
 opts_linear.isreal = 1;
 Afun = @(x) A*x - d*(d'*x)/vol;
-[x0,~] = eigs(Afun,N,1,'la',opts_linear);
+[x0,~] = eigs(Afun,n,1,'la',opts_linear);
 t_x0 = toc(t_start) - t_x0;
 
 %-------------------------------
@@ -99,7 +99,7 @@ fprintf('\n%s\n\n%s\n\n%s%-.4f\n\n%s%i\n%s%.4g\n%s%-.4e%s\n%s%-.4e%s\n%s%-.4e%s\
         '*************************************************************', ...
         'Algorithm: FAST-ATVO', ...
         'community modularity = ', Q, ...
-        'number of graph nodes = ', N, ...
+        'number of graph nodes = ', n, ...
         'graph volume = ', vol, ...
         'solving time: ', max(t_solver,0e0), ' seconds', ...
         'time to compute x0: ', max(t_x0,0e0), ' seconds', ...

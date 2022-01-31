@@ -23,10 +23,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// June 5th, 2020
-//
-// Copyright 2019-2020 Andrea Cristofari, Francesco Rinaldi, Francesco
-// Tudisco.
+// January 31st, 2022
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -40,6 +37,9 @@
 // GNU General Public License for more details.
 // You should have received a copy of the GNU General Public License
 // along with FAST-ATVO. If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2019-2022 Andrea Cristofari, Francesco Rinaldi, Francesco
+// Tudisco.
 //
 // -------------------------------------------------------------------------
 
@@ -62,44 +62,46 @@ unsigned short int get_full_graph_matlab(Graph&, const mxArray*);
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
     unsigned short int flag_graph;
+    const unsigned short int *usint_ptr;
+    const double *cdbl_ptr;
     std::vector<double> x0;
-    mxDouble *x_ptr_in,*cx_ptr_out;
+    mxDouble *mdbl_ptr;
     
     if (nrhs<2 || nrhs>3) {
-        mexErrMsgTxt("error when calling fast_atvo: the number of input arguments must be either 2 or 3.\n");
+        mexErrMsgTxt("when calling fast_atvo, the number of input arguments must be either 2 or 3.\n");
     }
     if (nlhs<1 || nlhs>3) {
-        mexErrMsgTxt("error when calling fast_atvo: the number of output arguments must be between 1 and 3.\n");
+        mexErrMsgTxt("when calling fast_atvo, the number of output arguments must be between 1 and 3.\n");
     }
     if (mxIsScalar(prhs[0]) || !mxIsDouble(prhs[0]) || mxIsComplex(prhs[0]) ||
         mxGetNumberOfDimensions(prhs[0])>2 || mxGetM(prhs[0])!=mxGetN(prhs[0])) {
-        mexErrMsgTxt("error when calling fast_atvo: the first input argument must be a square and upper triangular matrix with non-negative real elements.");
+        mexErrMsgTxt("when calling fast_atvo, the first input must be a square and upper triangular matrix with non-negative real elements.");
     }
     if (mxIsScalar(prhs[1]) || !mxIsDouble(prhs[1]) || mxIsComplex(prhs[1]) ||
         mxGetNumberOfDimensions(prhs[1])>2 || mxIsSparse(prhs[1]) || mxGetN(prhs[1])!=1) {
-        mexErrMsgTxt("error when calling fast_atvo: the second input argument must be a full column vector of real numbers with length equal to the number of nodes.");
+        mexErrMsgTxt("when calling fast_atvo, the second input must be a full real column vector with length equal to the number of nodes.");
     }
     
-    // set required inputs (i.e., weight matrix and starting point)
+    // get required inputs (i.e., weight matrix and starting point)
     Graph gr;
     flag_graph = mxIsSparse(prhs[0]) ? get_sparse_graph_matlab(gr,prhs[0]) : get_full_graph_matlab(gr,prhs[0]);
     if (flag_graph > 0) {
         if (flag_graph == 1) {
-            mexErrMsgTxt("error when calling fast_atvo: the first input must be a square and upper triangular matrix with non-negative real elements.");
+            mexErrMsgTxt("when calling fast_atvo, the first input must be a square and upper triangular matrix with non-negative real elements.");
         } else { // i.e., flag_graph == 2
-            mexErrMsgTxt("error when calling fast_atvo: the graph volume must be positive.");
+            mexErrMsgTxt("when calling fast_atvo, the graph volume must be positive.");
         }
     }
     if (mxGetM(prhs[1]) != gr.n_original) {
-        mexErrMsgTxt("error when calling fast_atvo: the second input must be a full column vector of real numbers with length equal to the number of nodes.");
+        mexErrMsgTxt("when calling fast_atvo, the second input must be a full column vector of real numbers with length equal to the number of nodes.");
     }
-    x_ptr_in = mxGetDoubles(prhs[1]);
+    mdbl_ptr = mxGetDoubles(prhs[1]);
     x0.resize(gr.n_original);
     for (unsigned int i=0; i<gr.n_original; i++) {
-        x0[i] = *(x_ptr_in+i);
+        x0[i] = mdbl_ptr[i];
     }
 
-    // set fast-atvo options
+    // get fast-atvo options
     fast_atvo_options opts;
     opts.p_exp = 14e-1;
     opts.ws_size = std::max(10,std::min(1000,int(round(3e-2*gr.n))));
@@ -110,50 +112,50 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     opts.verbosity = 0;
     if (nrhs > 2) {
         if (!mxIsStruct(prhs[2]) || mxGetNumberOfElements(prhs[2])>1) {
-            mexErrMsgTxt("error when calling fast_atvo: the third input argument (which is optional) must be a structure.");
+            mexErrMsgTxt("when calling fast_atvo, the third input (which is optional) must be a structure.");
         }
         for (int i=0; i<mxGetNumberOfFields(prhs[2]); i++) {
             mxArray *tmp_mxArray = mxGetFieldByNumber(prhs[2],0,i);
             const char *tmp_char = mxGetFieldNameByNumber(prhs[2],i);
             if (std::string(tmp_char).compare(std::string("p_exp")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<=1e0) {
-                    mexErrMsgTxt("error when calling fast_atvo: 'p_exp' must be a number greater than 1.");
+                    mexErrMsgTxt("when calling fast_atvo, 'p_exp' must be a number greater than 1.");
                 }
                 opts.p_exp = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("ws_size")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<1e0) {
-                    mexErrMsgTxt("error when calling fast_atvo: 'ws_size' must be a number greater than or equal to 1.");
+                    mexErrMsgTxt("when calling fast_atvo, 'ws_size' must be a number greater than or equal to 1.");
                 }
                 opts.ws_size = (int)floor(*mxGetDoubles(tmp_mxArray));
             } else if (std::string(tmp_char).compare(std::string("out_it")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<1e0) {
-                    mexErrMsgTxt("error when calling fast_atvo: 'out_it' must be a number greater than or equal to 1.");
+                    mexErrMsgTxt("when calling fast_atvo, 'out_it' must be a number greater than or equal to 1.");
                 }
                 opts.out_it = (int)floor(*mxGetDoubles(tmp_mxArray));
             } else if (std::string(tmp_char).compare(std::string("lb")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)>0e0) {
-                    mexErrMsgTxt("error when calling fast_atvo: 'lb' must be a negative number.");
+                    mexErrMsgTxt("when calling fast_atvo, 'lb' must be a negative number.");
                 }
                 opts.lb = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("ub")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<0e0) {
-                    mexErrMsgTxt("error when calling fast_atvo: 'ub' must be a positive number.");
+                    mexErrMsgTxt("when calling fast_atvo, 'ub' must be a positive number.");
                 }
                 opts.ub = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("perc_at_bounds")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) ||
                     *mxGetDoubles(tmp_mxArray)<0e0 || *mxGetDoubles(tmp_mxArray)>1e0) {
-                    mexErrMsgTxt("error when calling fast_atvo: 'perc_at_bounds' must be a number between 0 and 1.");
+                    mexErrMsgTxt("when calling fast_atvo, 'perc_at_bounds' must be a number between 0 and 1.");
                 }
                 opts.perc_at_bounds = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("verbosity")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) ||
                     *mxGetDoubles(tmp_mxArray)<0e0 || *mxGetDoubles(tmp_mxArray)>2e0) {
-                    mexErrMsgTxt("error when calling fast_atvo: 'verbosity' must be a number between 0 and 2.");
+                    mexErrMsgTxt("when calling fast_atvo, 'verbosity' must be a number between 0 and 2.");
                 }
                 opts.verbosity = (unsigned short int)round(*mxGetDoubles(tmp_mxArray));
             } else {
-                mexErrMsgTxt("error when calling fast_atvo: not valid field name in the structure of the third input argument (which is optional).");
+                mexErrMsgTxt("when calling fast_atvo, a not valid field name is present in the structure of the third input (which is optional).");
             }            
         }
     }
@@ -162,21 +164,21 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     Fast_atvo alg(&gr,x0,opts);
     alg.solve();
 
-    // assign value to outputs
+    // set outputs
     plhs[0] = mxCreateDoubleMatrix(gr.n_original,1,mxREAL);
-    cx_ptr_out = mxGetDoubles(plhs[0]);
-    const unsigned short int *c_ptr = &(alg.get_communities()[0]);
+    mdbl_ptr = mxGetDoubles(plhs[0]);
+    usint_ptr = &(alg.get_communities()[0]);
     for (unsigned int i=0; i<gr.n_original; i++) {
-        *(cx_ptr_out+i) = (double) *(c_ptr+i);
+        mdbl_ptr[i] = (double) usint_ptr[i];
     }
     if (nlhs > 1) {
         plhs[1] = mxCreateDoubleScalar(alg.get_modularity());
         if (nlhs > 2) {
             plhs[2] = mxCreateDoubleMatrix(gr.n_original,1,mxREAL);
-            cx_ptr_out = mxGetDoubles(plhs[2]);
-            const double *x_ptr = &(alg.get_x()[0]);
+            mdbl_ptr = mxGetDoubles(plhs[2]);
+            cdbl_ptr = &(alg.get_x()[0]);
             for (unsigned int i=0; i<gr.n_original; i++) {
-                *(cx_ptr_out+i) = *(x_ptr+i);
+                mdbl_ptr[i] = cdbl_ptr[i];
             }
         }
     }
