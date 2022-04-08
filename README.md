@@ -205,7 +205,7 @@ Tudisco.
         Create the executable `fast_atvo` by compiling the files `fast_atvo.cpp` and `main.cpp`,
         then type
 
-            fast_atvo ExampleGraph ExampleX0 -c ExampleC.txt
+            fast_atvo ExampleGraph.txt ExampleX0.txt -c ExampleC.txt
 
         so that the communities found by FAST-ATVO will be printed to the
         file `ExampleC.txt`.
@@ -213,7 +213,7 @@ Tudisco.
         Or, if you also wish to print synthetic iteration details of the
         optimization algorithm, you may type
 
-            fast_atvo ExampleGraph ExampleX0 -c ExampleC.txt -v 1 
+            fast_atvo ExampleGraph.txt ExampleX0.txt -c ExampleC.txt -v 1 
 
    2b. **How to call FAST-ATVO from Matlab**
 
