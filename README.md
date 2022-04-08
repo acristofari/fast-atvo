@@ -52,7 +52,7 @@ Tudisco.
     * `fast_atvo_matlab.cpp`,
     * `main.m`,
     * `make.m`,
-    * `syntax.txt`.
+    * `usage.txt`.
 
 2. You can call FAST-ATVO either from the command prompt (see 2a) or from Matlab (see 2b).
 
