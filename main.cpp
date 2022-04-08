@@ -271,7 +271,7 @@ int main(int argc, char *argv[]) {
         std::ofstream file_output;
         file_output.open(output_opts.file_communities,std::ios::trunc);
         for (unsigned int i=0; i<gr.n_original; i++) {
-            file_output << *(c_ptr+i) << "\n";
+            file_output << c_ptr[i] << "\n";
         }
         file_output.close();
         std::cout << "done\n";
@@ -294,7 +294,7 @@ int main(int argc, char *argv[]) {
         file_output.precision(6);
         file_output.setf(std::ios::scientific,std::ios::floatfield);
         for (unsigned int i=0; i<gr.n_original; i++) {
-            file_output << *(x_ptr+i) << "\n";
+            file_output << x_ptr[i] << "\n";
         }
         file_output.close();
         std::cout << "done\n";
