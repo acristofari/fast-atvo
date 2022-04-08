@@ -85,7 +85,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
         mexErrMsgTxt("The first input must be a square and upper triangular matrix with non-negative real elements.");
     }
     if (mxGetNumberOfDimensions(prhs[1])>2 || mxGetN(prhs[1])!=1 || !mxIsDouble(prhs[1]) ||
-        mxIsComplex(prhs[1]) ||  mxIsSparse(prhs[1]) || ) {
+        mxIsComplex(prhs[1]) ||  mxIsSparse(prhs[1])) {
         mexErrMsgTxt("The second input must be a full real column vector with length equal to the number of nodes.");
     }
     
