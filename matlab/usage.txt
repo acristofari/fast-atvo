@@ -57,7 +57,7 @@ Input arguments.
 
 Output arguments.
 -------------------------------------------------------------------------
-- c is a 0-1 vector describing the two communities found by FAST-ATVO,
-- mod is the community modularity found by FAST-ATVO,
-- x is the solution found by the optimization algorithm.
+- C is a 0-1 vector describing the two communities found by FAST-ATVO,
+- MOD is the community modularity found by FAST-ATVO,
+- X is the final solution found by the optimization algorithm.
 -------------------------------------------------------------------------
