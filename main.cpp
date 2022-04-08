@@ -1,9 +1,7 @@
 // -------------------------------------------------------------------------
 //
-// This file is part of FAST-ATVO, which is a software for community
-// detection in undirected graphs with non-negative weights.
-//
-// See the file 'README.txt' to know how to run the program.
+// This file is part of FAST-ATVO, which is a solver for community
+// detection problems in undirected graphs with non-negative weights.
 //
 // -------------------------------------------------------------------------
 //
@@ -21,7 +19,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// January 31st, 2022
+// April 8th, 2022
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -50,9 +48,10 @@
 #include <math.h>
 #include <string>
 #include <string.h>
-#include <time.h>
 #include "graph.h"
 #include "fast_atvo.h"
+
+// See the file 'README.md' to know how to call FAST-ATVO from the command prompt.
 
 bool get_graph_from_file(const char*, Graph&);
 bool get_x0_from_file(const char*, std::vector<double>&);
@@ -77,15 +76,15 @@ int main(int argc, char *argv[]) {
         flag_graph = get_graph_from_file(argv[1],gr);
     }
     catch (unsigned int err) {
-        std::cout << "error reading graph from '" << argv[1] << "' (line " << err << ")\n";
+        std::cout << "Error reading graph from '" << argv[1] << "' (line " << err << ").\n";
         return 1;
     }
     catch (char) {
-        std::cout << "error: the graph volume must be positive\n";
+        std::cout << "Error: the graph volume must be positive.\n";
         return 1;
     }
     if (flag_graph) {
-        std::cout << "error opening '" << argv[1] << "', check if the file exists in the current directory\n";
+        std::cout << "Error opening '" << argv[1] << "', check if the file exists in the current directory.\n";
         return 1;
     }
 
@@ -95,15 +94,15 @@ int main(int argc, char *argv[]) {
         flag_x0 = get_x0_from_file(argv[2],x0);
     }
     catch (unsigned int err) {
-        std::cout << "error reading starting point from '" << argv[2] << "' (line " << err << ")\n";
+        std::cout << "Error reading starting point from '" << argv[2] << "' (line " << err << ").\n";
         return 1;
     }
     catch (char) {
-        std::cout << "error: the length of the starting point must be equal to the number of nodes\n";
+        std::cout << "Error: the length of the starting point must be equal to the number of nodes.\n";
         return 1;
     }
     if (flag_x0) {
-        std::cout << "error opening '" << argv[2] << "', check if the file exists in the current directory\n";
+        std::cout << "Error opening '" << argv[2] << "', check if the file exists in the current directory.\n";
         return 1;
     }
 
@@ -150,7 +149,7 @@ int main(int argc, char *argv[]) {
                             return 1;
                         }
                         if (tmp <= 1) {
-                            std::cout << "error: the exponent parameter of the objective function must be greater than 1\n";
+                            std::cout << "In the options, the exponent parameter of the objective function must be greater than 1.\n";
                             return 1;
                         }
                         opts.p_exp = tmp;
@@ -163,7 +162,7 @@ int main(int argc, char *argv[]) {
                             return 1;
                         }
                         if (tmp < 1) {
-                            std::cout << "error: the maximum size of the working set in the optimization algorithm must be greater than or equal to 1\n";
+                            std::cout << "In the options, the maximum size of the working set in the optimization algorithm must be greater than or equal to 1.\n";
                             return 1;
                         }
                         opts.ws_size = (unsigned int) floor(tmp);
@@ -176,7 +175,7 @@ int main(int argc, char *argv[]) {
                             return 1;
                         }
                         if (tmp < 1) {
-                            std::cout << "error: the number of outer iterations for the globalization strategy must be greater than or equal to 1\n";
+                            std::cout << "In the options, the number of outer iterations for the globalization strategy must be greater than or equal to 1.\n";
                             return 1;
                         }
                         opts.out_it = (unsigned int) floor(tmp);
@@ -189,7 +188,7 @@ int main(int argc, char *argv[]) {
                             return 1;
                         }
                         if (tmp >= 0) {
-                            std::cout << "error: the lower bound on the variables for the optimization problem must be negative\n";
+                            std::cout << "In the options, the lower bound on the variables for the optimization problem must be negative.\n";
                             return 1;
                         }
                         opts.lb = tmp;
@@ -202,7 +201,7 @@ int main(int argc, char *argv[]) {
                             return 1;
                         }
                         if (tmp <= 0) {
-                            std::cout << "error: the upper bound on the variables for the optimization problem must be positive\n";
+                            std::cout << "In the options, the upper bound on the variables for the optimization problem must be positive.\n";
                             return 1;
                         }
                         opts.ub = tmp;
@@ -215,7 +214,7 @@ int main(int argc, char *argv[]) {
                             return 1;
                         }
                         if (tmp<0e0 || tmp>1e0) {
-                            std::cout << "error: the percentage of variables that will be set to the bounds in x0 must be between 0 and 1\n";
+                            std::cout << "In the options, the percentage of variables that will be set to the bounds in x0 must be between 0 and 1.\n";
                             return 1;
                         }
                         opts.perc_at_bounds = tmp;
@@ -228,7 +227,7 @@ int main(int argc, char *argv[]) {
                             return 1;
                         }
                         if (tmp<0e0 || tmp>2e0) {
-                            std::cout << "error: the verbosity level must be between 0 and 2\n";
+                            std::cout << "In the options, the verbosity level must be between 0 and 2.\n";
                             return 1;
                         }
                         opts.verbosity = (unsigned short int) round(tmp);

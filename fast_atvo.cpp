@@ -1,9 +1,7 @@
 // -------------------------------------------------------------------------
 //
-// This file is part of FAST-ATVO, which is a software for community
-// detection in undirected graphs with non-negative weights.
-//
-// See the file 'README.txt' to know how to use FAST-ATVO.
+// This file is part of FAST-ATVO, which is a solver for community
+// detection problems in undirected graphs with non-negative weights.
 //
 // -------------------------------------------------------------------------
 //
@@ -21,7 +19,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// January 31st, 2022
+// April 8th, 2022
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -55,7 +53,6 @@
 Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const fast_atvo_options& opts) {
             
     // parameters for termination of local minimization
-    // (see description of 'solve_locally' function below)
     //----------------------------------------------------------------------
     eps_opt = 1e-1;
     min_gd = 1e-6;
@@ -67,7 +64,7 @@ Fast_atvo::Fast_atvo(const Graph *p, const std::vector<double>& x0, const fast_a
     max_n_g = 1000;
     //----------------------------------------------------------------------
 
-    // non-monotone parameters for local minimization
+    // parameters for non-monotone line search in local minimization
     //----------------------------------------------------------------------
     m = 100;
     z = 20;
