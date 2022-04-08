@@ -1,0 +1,63 @@
+In this file, it is explained how to call FAST-ATVO from Matlab.
+-------------------------------------------------------------------------
+
+
+Usage.
+-------------------------------------------------------------------------
+C = fast_atvo(A,X0)
+C = fast_atvo(A,X0,OPTS)
+[C,MOD] = fast_atvo(__)
+[C,MOD,X] = fast_atvo(__)
+-------------------------------------------------------------------------
+
+
+Input arguments.
+-------------------------------------------------------------------------
+- A (required) is the weight matrix, it can be sparse or full, it must be
+  square upper triangular with non-negative real elements (A will be
+  symmetrized automatically leaving the diagonal unchanged, since the graph
+  is assumed to be undirected);
+- X0 (required) is the starting point of the algorithm, it must be a full
+  column vector with length equal to the number of nodes;
+- OPTS (optional) is a structure having (some of) the following fields:
+  p_exp, which must be a number greater than 1.
+         It is the exponent parameter of the objective function.
+         If not specified, by default it is equal to 1.4.
+  ws_size, which must be a number greater than or equal to 1.
+         It is the maximum size of the working set in the optimization
+         algorithm.
+         If not specified, by default it is equal to
+         max(10,min(1000,0.03*n)), where 'n' is the number of
+         non-isolated nodes.
+  out_it, which must be a number greater than or equal to 1.
+         It is the number of outer iterations for the globalization
+         strategy.
+         If not specified, by default it is equal to 1, i.e., the
+         globalization strategy is not activated.
+  lb, which must be a number less than 0.
+         It is the lower bound on the variables for the optimization
+         problem.
+         If not specified, by default it is equal to -1.
+  ub, which must be a number greater than 0.
+         It is the upper bound on the variables for the optimization
+         problem.
+         If not specified, by default it is equal to 1.
+  perc_at_bounds, which must be a number between 0 and 1.
+         It is the percentage of negative and positive variables that
+         will be set to the lower and the upper bound in x0, respectively.
+         If not specified, by default it is equal to 1, i.e., all
+         non-zero variables in x0 will be set to the bounds.
+  verbosity, which must be a number between 0 and 2.
+         It is the verbosity level, to print iteration details of the
+         optimization algorithm.
+         If not specified, by default it is equal to 0, i.e., there are
+         no prints.
+-------------------------------------------------------------------------
+
+
+Output arguments.
+-------------------------------------------------------------------------
+- c is a 0-1 vector describing the two communities found by FAST-ATVO,
+- mod is the community modularity found by FAST-ATVO,
+- x is the solution found by the optimization algorithm.
+-------------------------------------------------------------------------

@@ -1,11 +1,7 @@
 // -------------------------------------------------------------------------
 //
-// This file is part of FAST-ATVO, which is a software for community
-// detection in an undirected graph with non-negative weights.
-//
-// This is a MEX file for Matlab.
-// See the file 'README.txt' to know how to build the MEX file and run the
-// program.
+// This file is part of FAST-ATVO, which is a solver for community
+// detection problems in undirected graphs with non-negative weights.
 //
 // -------------------------------------------------------------------------
 //
@@ -23,7 +19,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// January 31st, 2022
+// April 8th, 2022
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -56,6 +52,9 @@
 typedef double mxDouble;
 #endif
 
+// This is a MEX file for Matlab.
+// See the file 'README.md' to know how to build the MEX file and run the program.
+
 unsigned short int get_sparse_graph_matlab(Graph&, const mxArray*);
 unsigned short int get_full_graph_matlab(Graph&, const mxArray*);
 
@@ -66,20 +65,28 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     const double *cdbl_ptr;
     std::vector<double> x0;
     mxDouble *mdbl_ptr;
+
+    // check the number of inupts and outputs
+    if (nrhs<2) {
+        mexErrMsgTxt("At least two inputs are required.");
+    }
+    if (nrhs>3) {
+        mexErrMsgTxt("At most three inputs are required.");
+    }
+    if (nlhs<1) {
+        mexErrMsgTxt("At least one input is required.");
+    }
+    if (nlhs>3) {
+        mexErrMsgTxt("At most three outputs are required.");
+    }
     
-    if (nrhs<2 || nrhs>3) {
-        mexErrMsgTxt("when calling fast_atvo, the number of input arguments must be either 2 or 3.\n");
+    if (mxIsScalar(prhs[0]) || mxGetNumberOfDimensions(prhs[0])>2 || mxGetM(prhs[0])!=mxGetN(prhs[0]) ||
+        !mxIsDouble(prhs[0]) || mxIsComplex(prhs[0])) {
+        mexErrMsgTxt("The first input must be a square and upper triangular matrix with non-negative real elements.");
     }
-    if (nlhs<1 || nlhs>3) {
-        mexErrMsgTxt("when calling fast_atvo, the number of output arguments must be between 1 and 3.\n");
-    }
-    if (mxIsScalar(prhs[0]) || !mxIsDouble(prhs[0]) || mxIsComplex(prhs[0]) ||
-        mxGetNumberOfDimensions(prhs[0])>2 || mxGetM(prhs[0])!=mxGetN(prhs[0])) {
-        mexErrMsgTxt("when calling fast_atvo, the first input must be a square and upper triangular matrix with non-negative real elements.");
-    }
-    if (mxIsScalar(prhs[1]) || !mxIsDouble(prhs[1]) || mxIsComplex(prhs[1]) ||
-        mxGetNumberOfDimensions(prhs[1])>2 || mxIsSparse(prhs[1]) || mxGetN(prhs[1])!=1) {
-        mexErrMsgTxt("when calling fast_atvo, the second input must be a full real column vector with length equal to the number of nodes.");
+    if (mxGetNumberOfDimensions(prhs[1])>2 || mxGetN(prhs[1])!=1 || !mxIsDouble(prhs[1]) ||
+        mxIsComplex(prhs[1]) ||  mxIsSparse(prhs[1]) || ) {
+        mexErrMsgTxt("The second input must be a full real column vector with length equal to the number of nodes.");
     }
     
     // get required inputs (i.e., weight matrix and starting point)
@@ -87,13 +94,13 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     flag_graph = mxIsSparse(prhs[0]) ? get_sparse_graph_matlab(gr,prhs[0]) : get_full_graph_matlab(gr,prhs[0]);
     if (flag_graph > 0) {
         if (flag_graph == 1) {
-            mexErrMsgTxt("when calling fast_atvo, the first input must be a square and upper triangular matrix with non-negative real elements.");
+            mexErrMsgTxt("The first input must be a square and upper triangular matrix with non-negative real elements.");
         } else { // i.e., flag_graph == 2
-            mexErrMsgTxt("when calling fast_atvo, the graph volume must be positive.");
+            mexErrMsgTxt("The graph volume must be positive.");
         }
     }
     if (mxGetM(prhs[1]) != gr.n_original) {
-        mexErrMsgTxt("when calling fast_atvo, the second input must be a full column vector of real numbers with length equal to the number of nodes.");
+        mexErrMsgTxt("The second input must be a full real column vector of length equal to the number of nodes.");
     }
     mdbl_ptr = mxGetDoubles(prhs[1]);
     x0.resize(gr.n_original);
@@ -112,50 +119,50 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
     opts.verbosity = 0;
     if (nrhs > 2) {
         if (!mxIsStruct(prhs[2]) || mxGetNumberOfElements(prhs[2])>1) {
-            mexErrMsgTxt("when calling fast_atvo, the third input (which is optional) must be a structure.");
+            mexErrMsgTxt("the third input (which is optional) must be a structure.");
         }
         for (int i=0; i<mxGetNumberOfFields(prhs[2]); i++) {
             mxArray *tmp_mxArray = mxGetFieldByNumber(prhs[2],0,i);
             const char *tmp_char = mxGetFieldNameByNumber(prhs[2],i);
             if (std::string(tmp_char).compare(std::string("p_exp")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<=1e0) {
-                    mexErrMsgTxt("when calling fast_atvo, 'p_exp' must be a number greater than 1.");
+                    mexErrMsgTxt("In the options, 'p_exp' must be a number greater than 1.");
                 }
                 opts.p_exp = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("ws_size")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<1e0) {
-                    mexErrMsgTxt("when calling fast_atvo, 'ws_size' must be a number greater than or equal to 1.");
+                    mexErrMsgTxt("In the options, 'ws_size' must be a number greater than or equal to 1.");
                 }
                 opts.ws_size = (int)floor(*mxGetDoubles(tmp_mxArray));
             } else if (std::string(tmp_char).compare(std::string("out_it")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<1e0) {
-                    mexErrMsgTxt("when calling fast_atvo, 'out_it' must be a number greater than or equal to 1.");
+                    mexErrMsgTxt("In the options, 'out_it' must be a number greater than or equal to 1.");
                 }
                 opts.out_it = (int)floor(*mxGetDoubles(tmp_mxArray));
             } else if (std::string(tmp_char).compare(std::string("lb")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)>0e0) {
-                    mexErrMsgTxt("when calling fast_atvo, 'lb' must be a negative number.");
+                    mexErrMsgTxt("In the options, 'lb' must be a negative number.");
                 }
                 opts.lb = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("ub")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) || *mxGetDoubles(tmp_mxArray)<0e0) {
-                    mexErrMsgTxt("when calling fast_atvo, 'ub' must be a positive number.");
+                    mexErrMsgTxt("In the options, 'ub' must be a positive number.");
                 }
                 opts.ub = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("perc_at_bounds")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) ||
                     *mxGetDoubles(tmp_mxArray)<0e0 || *mxGetDoubles(tmp_mxArray)>1e0) {
-                    mexErrMsgTxt("when calling fast_atvo, 'perc_at_bounds' must be a number between 0 and 1.");
+                    mexErrMsgTxt("In the options, 'perc_at_bounds' must be a number between 0 and 1.");
                 }
                 opts.perc_at_bounds = *mxGetDoubles(tmp_mxArray);
             } else if (std::string(tmp_char).compare(std::string("verbosity")) == 0) {
                 if (!mxIsScalar(tmp_mxArray) || !mxIsDouble(tmp_mxArray) || mxIsComplex(tmp_mxArray) ||
                     *mxGetDoubles(tmp_mxArray)<0e0 || *mxGetDoubles(tmp_mxArray)>2e0) {
-                    mexErrMsgTxt("when calling fast_atvo, 'verbosity' must be a number between 0 and 2.");
+                    mexErrMsgTxt("In the options, 'verbosity' must be a number between 0 and 2.");
                 }
                 opts.verbosity = (unsigned short int)round(*mxGetDoubles(tmp_mxArray));
             } else {
-                mexErrMsgTxt("when calling fast_atvo, a not valid field name is present in the structure of the third input (which is optional).");
+                mexErrMsgTxt("Not valid field name in the structure of options.");
             }            
         }
     }
