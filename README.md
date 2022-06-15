@@ -61,7 +61,7 @@ Tudisco.
         upper triangular matrix. Each line of the text file must have the
         following form:
 
-	   <img src="https://latex.codecogs.com/svg.image?i_1,&space;j_1&space;\,\,&space;w_1&space;\,\,\,\,\,\,&space;i_2,&space;j_2&space;\,\,&space;w_2&space;\,\,\,\,\,\,&space;i_3,&space;j_3&space;\,\,&space;w_3&space;\,\,\,\,\,\,&space;\ldots">
+	    <img src="https://latex.codecogs.com/svg.image?i_1,&space;j_1&space;\,\,&space;w_1&space;\,\,\,\,\,\,&space;i_2,&space;j_2&space;\,\,&space;w_2&space;\,\,\,\,\,\,&space;i_3,&space;j_3&space;\,\,&space;w_3&space;\,\,\,\,\,\,&space;\ldots">
 
         where any tern (i<sub>h</sub>, j<sub>h</sub> w<sub>h</sub>) represents an edge between the nodes i<sub>h</sub>
         and j<sub>h</sub> with non-negative weight w<sub>h</sub>.
