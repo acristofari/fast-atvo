@@ -97,7 +97,7 @@ Tudisco.
 
         For instance, consider the following starting point:
 
-	   <img src="https://latex.codecogs.com/svg.image?\begin{bmatrix}0&space;\\1&space;\\-0.3&space;\\0&space;\\0.2\end{bmatrix}">
+	    <img src="https://latex.codecogs.com/svg.image?\begin{bmatrix}0&space;\\1&space;\\-0.3&space;\\0&space;\\0.2\end{bmatrix}">
 
         A valid text file will be:
 
