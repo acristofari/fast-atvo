@@ -1,6 +1,6 @@
 # Community detection in undirected graphs
 
-*FAST-ATVO* is a solver for community detection problems in undirected graphs
+*Fast Active-SeT based Approximate Total Variation Optimization* (FAST-ATVO) is a solver for community detection problems in undirected graphs
 with non-negative weights, using a non-linear optimization approach.
 
 ## Reference paper
