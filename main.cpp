@@ -19,7 +19,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// April 8th, 2022
+// June 15th, 2022
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -44,10 +44,8 @@
 #endif
 
 #include <iostream>
-#include <algorithm>
-#include <math.h>
-#include <string>
-#include <string.h>
+#include <cmath>
+#include <cstring>
 #include "graph.h"
 #include "fast_atvo.h"
 
@@ -61,9 +59,6 @@ int main(int argc, char *argv[]) {
 
     bool flag_graph,flag_x0;
     std::vector<double> x0;
-    clock_t t_start,t_setup,t_solver;
-
-    t_start = clock();
 
     if (argc<3 || argc>23) {
         print_usage();
@@ -246,10 +241,8 @@ int main(int argc, char *argv[]) {
     }
 
     // call the solver
-    t_setup = clock();
     Fast_atvo alg(&gr,x0,opts);
     alg.solve();
-    t_solver = clock();
 
     // print final results to screen
     std::cout.precision(5);
@@ -260,8 +253,6 @@ int main(int argc, char *argv[]) {
     std::cout.setf(std::ios::scientific,std::ios::floatfield);
     std::cout << "\n\nnumber of graph nodes = " << gr.n_original << " (" << gr.n_original - gr.n << " with degree zero)"
               << "\ngraph volume = " << gr.volume
-              << "\nsolving time: " << (float)(t_solver-t_setup)/CLOCKS_PER_SEC << " seconds"
-              << "\nset-up time: " << (float)(t_setup-t_start)/CLOCKS_PER_SEC << " seconds"
               << "\n\n*************************************************************\n\n";
 
     // print final results to files (if required)

@@ -17,7 +17,6 @@ on Applied Mathematics, 80(3), 1392-1419](https://epubs.siam.org/doi/10.1137/19M
 
 ## Licensing
 
-This file is part of FAST-ATVO.
 FAST-ATVO is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
@@ -62,29 +61,21 @@ Tudisco.
         upper triangular matrix. Each line of the text file must have the
         following form:
 
-            i_1,j_1 w_1 i_2,j_2 w_2 i_3,j_3 w_3 ...
+	   <img src="https://latex.codecogs.com/svg.image?i_1,&space;j_1&space;\,\,&space;w_1&space;\,\,\,\,\,\,&space;i_2,&space;j_2&space;\,\,&space;w_2&space;\,\,\,\,\,\,&space;i_3,&space;j_3&space;\,\,&space;w_3&space;\,\,\,\,\,\,&space;\ldots">
 
-        where any tern _i\_h,j\_h w\_h_ represents an edge between the nodes _i\_h_
-        and _j\_h_ with non-negative weight _w\_h_.
+        where any tern (i<sub>h</sub>, j<sub>h</sub> w<sub>h</sub>) represents an edge between the nodes i<sub>h</sub>
+        and j<sub>h</sub> with non-negative weight w<sub>h</sub>.
 
-        It must hold _i\_1 <= i\_2 <= i\_3 <= ...._, i.e., the first nodes of the
+        It must hold i<sub>1</sub> &le; i<sub>2</sub> &le; i<sub>3</sub> <= ..., i.e., the first nodes of the
         terns must be written in a non-decreasing order.
 
-        Note that it must also hold _i\_1 <= j\_1, i\_2 <= j\_2, i\_3 <= j\_3, ...,_
-        since the weight matrix must be upper triangular.
+        Note that, since the weight matrix must be upper triangular, it must also hold that i<sub>1</sub> &le; j<sub>1</sub>, i<sub>2</sub> &le; j<sub>2</sub>, i<sub>3</sub> &le; j<sub>3</sub>, ....
 
-        Unspecified weights between two nodes are assumed to be zero (so
-        that only positive weights need to be specified).
+        Unspecified weights between two nodes are assumed to be zero (so that only positive weights must be specified).
 
         For instance, consider the following weight matrix:
 
-            ┏                             ┓
-            ┃ 0     0.9   1.5   2     0   ┃
-            ┃ 0.9   0     0     0     0   ┃
-            ┃ 1.5   0     0     0.8   1.1 ┃
-            ┃ 2     0     0.8   0     0.3 ┃
-            ┃ 0     0     1.1   0.3   0   ┃
-            ┗                             ┛
+        <img src="https://latex.codecogs.com/svg.image?\begin{bmatrix}0&space;&&space;0.9&space;&&space;1.5&space;&&space;2&space;&&space;0&space;\\0.9&space;&&space;0&space;&&space;0&space;&&space;0&space;&&space;0&space;\\1.5&space;&&space;0&space;&&space;0&space;&&space;0.8&space;&&space;1.1&space;\\2&space;&&space;0&space;&&space;0.8&space;&&space;0&space;&&space;0.3&space;\\0&space;&&space;0&space;&&space;1.1&space;&&space;0.3&space;&&space;0\end{bmatrix}">
 
         A valid text file will be:
 
@@ -106,13 +97,7 @@ Tudisco.
 
         For instance, consider the following starting point:
 
-            ┏      ┓
-            ┃  0   ┃
-            ┃  1   ┃
-            ┃ -0.3 ┃
-            ┃  0   ┃
-            ┃  0.2 ┃
-            ┗      ┛
+	   <img src="https://latex.codecogs.com/svg.image?\begin{bmatrix}0&space;\\1&space;\\-0.3&space;\\0&space;\\0.2\end{bmatrix}">
 
         A valid text file will be:
 

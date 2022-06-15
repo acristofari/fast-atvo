@@ -19,7 +19,7 @@
 // Francesco Tudisco (e-mail: francesco.tudisco@gssi.it)
 //
 // Last update of this file:
-// April 8th, 2022
+// June 15th, 2022
 //
 // Licensing:
 // This file is part of FAST-ATVO.
@@ -43,7 +43,7 @@
 #include <algorithm>
 #include <iostream>
 #include <random>
-#include <math.h>
+#include <cmath>
 #include "fast_atvo.h"
 #include "graph.h"
 
